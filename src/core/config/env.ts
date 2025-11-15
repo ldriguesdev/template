@@ -1,15 +1,15 @@
-// src/core/config/env.ts
 import * as dotenv from 'dotenv';
 import { z } from 'zod';
 
 dotenv.config();
 
 const envSchema = z.object({
-  DATABASE_URL: z.string().url(),
   PORT: z.coerce.number().default(3000),
+  DATABASE_URL: z.string().url(),
   NODE_ENV: z
     .enum(['development', 'production', 'test'])
     .default('development'),
 });
 
 export const env = envSchema.parse(process.env);
+console.log('✅ ENV carregado:', env);
