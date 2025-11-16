@@ -9,19 +9,17 @@ export class User {
     public readonly updatedAt?: Date,
   ) {}
 
-  updateEmail(newEmail: string) {
-    this.email = newEmail;
-  }
-
-  updatePasswordHash(newHash: string) {
-    this.passwordHash = newHash;
-  }
-
-  updateName(name: string) {
-    this.name = name;
-  }
-
-  changeRole(role: 'USER' | 'ADMIN' | 'DOCTOR' | 'PATIENT' | 'MANAGER') {
-    this.role = role;
+  update(
+    data: Partial<{
+      name: string;
+      email: string;
+      passwordHash: string;
+      role: 'USER' | 'ADMIN' | 'DOCTOR' | 'PATIENT' | 'MANAGER';
+    }>,
+  ) {
+    if (data.name !== undefined) this.name = data.name;
+    if (data.email !== undefined) this.email = data.email;
+    if (data.passwordHash !== undefined) this.passwordHash = data.passwordHash;
+    if (data.role !== undefined) this.role = data.role;
   }
 }

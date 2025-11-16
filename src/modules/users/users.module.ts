@@ -7,6 +7,9 @@ import { GetUserUseCase } from './application/use-cases/get-user.usecase';
 import { GetUsersUseCase } from './application/use-cases/get-users.usecase';
 import { DeleteUserUseCase } from './application/use-cases/delete-user.usecase';
 import { UpdateUserUseCase } from './application/use-cases/update-user.usecase';
+import { PrismaDoctorsRepository } from '../doctors/infra/persistence/prisma/prisma-doctors.repository';
+import { DeleteDoctorUseCase } from '../doctors/application/use-cases/delete-doctor.usecase';
+import { DoctorsRepository } from '../doctors/domain/repository/doctors.repository';
 
 @Module({
   providers: [
@@ -15,10 +18,16 @@ import { UpdateUserUseCase } from './application/use-cases/update-user.usecase';
     GetUsersUseCase,
     DeleteUserUseCase,
     UpdateUserUseCase,
+    DeleteDoctorUseCase,
     PrismaUsersRepository,
+    PrismaDoctorsRepository,
     {
       provide: UsersRepository,
       useClass: PrismaUsersRepository,
+    },
+    {
+      provide: DoctorsRepository,
+      useClass: PrismaDoctorsRepository,
     },
   ],
   exports: [
@@ -27,6 +36,7 @@ import { UpdateUserUseCase } from './application/use-cases/update-user.usecase';
     GetUsersUseCase,
     DeleteUserUseCase,
     UpdateUserUseCase,
+    DeleteDoctorUseCase,
   ],
   controllers: [UsersController],
 })

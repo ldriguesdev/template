@@ -1,6 +1,8 @@
-import { NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UsersRepository } from '../../domain/repositories/users.repository';
+import { UserNotExistsError } from '../errors/user-not-exists.error';
 
+@Injectable()
 export class UpdateUserUseCase {
   constructor(private readonly usersRepository: UsersRepository) {}
 
@@ -15,13 +17,13 @@ export class UpdateUserUseCase {
     const user = await this.usersRepository.findById(id);
 
     if (!user) {
-      throw new NotFoundException();
+      throw new UserNotExistsError();
     }
 
-    if (data.name) user.updateName(data.name);
-    if (data.email) user.updateEmail(data.email);
-    if (data.role) user.changeRole(data.role);
+    user.update(data);
 
-    return this.usersRepository.update(user);
+    const updated = this.usersRepository.update(user);
+
+    return updated;
   }
 }

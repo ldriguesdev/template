@@ -1,5 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UsersRepository } from '../../domain/repositories/users.repository';
+import { UserNotExistsError } from '../errors/user-not-exists.error';
 
 @Injectable()
 export class GetUserUseCase {
@@ -9,7 +10,7 @@ export class GetUserUseCase {
     const user = await this.usersRepository.findById(id);
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new UserNotExistsError();
     }
 
     return user;

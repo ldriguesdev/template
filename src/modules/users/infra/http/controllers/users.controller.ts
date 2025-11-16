@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  NotFoundException,
   Param,
   Patch,
   Post,
@@ -14,11 +13,11 @@ import { UserPresenter } from '../presenters/user.presenter';
 import {
   ApiBadRequestResponse,
   ApiBody,
+  ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
-  ApiResponse,
 } from '@nestjs/swagger';
 import { GetUserUseCase } from 'src/modules/users/application/use-cases/get-user.usecase';
 import { GetUsersUseCase } from 'src/modules/users/application/use-cases/get-users.usecase';
@@ -37,85 +36,78 @@ export class UsersController {
   ) {}
 
   @Post()
-  @ApiOperation({ summary: 'Cria um novo usuário' })
+  @ApiOperation({ summary: 'Create a new user.' })
   @ApiBody({ type: CreateUserDTO })
+  @ApiCreatedResponse({
+    description: 'User created successfully.',
+  })
   async create(@Body() dto: CreateUserDTO) {
     const user = await this.createUser.execute(dto);
     return UserPresenter.toHTTP(user);
   }
 
-  @Patch()
-  @ApiOperation({ summary: 'Atualiza o usuário' })
+  @Patch(':id')
+  @ApiOperation({ summary: 'Updates an existing user.' })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    required: true,
+  })
   @ApiBody({ type: UpdateUserDTO })
+  @ApiOkResponse({ description: 'User updated successfully.' })
+  @ApiNotFoundResponse({ description: 'User not found.' })
   async update(@Param('id') id: string, @Body() dto: UpdateUserDTO) {
-    const user = await this.updateUser.execute(id, dto);
+    console.log('id', id);
 
+    const user = await this.updateUser.execute(id, dto);
     return UserPresenter.toHTTP(user);
   }
 
   @Get(':id')
   @ApiOperation({
-    summary: 'Buscar usuário por ID',
-    description:
-      'Retorna os dados detalhados de um usuário existente no sistema.',
+    summary: 'Search for a user by ID.',
   })
   @ApiParam({
     name: 'id',
     type: String,
     required: true,
-    description: 'ID do usuário a ser buscado',
     example: '9b6f98c5-3f24-4fae-8ff4-f6921b777abc',
   })
   @ApiOkResponse({
-    description: 'Usuário encontrado com sucesso',
+    description: 'User found successfully.',
   })
   @ApiNotFoundResponse({
-    description: 'Usuário não encontrado',
+    description: 'User not found.',
   })
   @ApiBadRequestResponse({
-    description: 'ID inválido ou mal formatado',
+    description: 'Invalid or incorrectly formatted ID.',
   })
   async findById(@Param('id') id: string) {
     const user = await this.getUser.execute(id);
-
-    if (!user) {
-      throw new NotFoundException('Usuário não encontrado');
-    }
-
     return UserPresenter.toHTTP(user);
   }
 
   @Get()
-  @ApiOperation({ summary: 'Lista todos os usuários' })
-  @ApiResponse({ status: 201, description: 'Lista retornada com sucesso' })
+  @ApiOperation({ summary: 'List all users.' })
+  @ApiOkResponse({ description: 'Users listed successfully.' })
   async findAll() {
     const users = await this.getAllUsers.execute();
-
-    return users.map((data) => UserPresenter.toHTTP(data));
+    return users ? users.map((user) => UserPresenter.toHTTP(user)) : [];
   }
 
   @Delete(':id')
   @ApiOperation({
-    summary: 'Deletar usuário por ID',
-    description:
-      'Remove um usuário existente do sistema com base no ID informado.',
+    summary: 'Delete user by ID.',
   })
   @ApiParam({
     name: 'id',
     type: String,
-    description: 'ID do usuário a ser deletado',
     required: true,
   })
-  @ApiNotFoundResponse({
-    description: 'Usuário não encontrado',
-  })
+  @ApiOkResponse({ description: 'User deleted successfully.' })
+  @ApiNotFoundResponse({ description: 'User not found.' })
   async delete(@Param('id') id: string) {
     const user = await this.deleteUser.execute(id);
-
-    if (!user) {
-      throw new NotFoundException('Usuário não encontrado');
-    }
-
     return UserPresenter.toHTTP(user);
   }
 }
