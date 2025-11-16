@@ -1,7 +1,9 @@
+import { Injectable } from '@nestjs/common';
 import { DoctorsRepository } from '../../domain/repository/doctors.repository';
-import { UpdateDoctorDTO } from '../dto/update-doctor.dto';
 import { DoctorNotFoundError } from '../errors/doctor-not-found.error';
+import type { UpdateDoctorDTO } from '../dto/update-doctor.dto';
 
+@Injectable()
 export class UpdateDoctorUseCase {
   constructor(private readonly doctorsRepository: DoctorsRepository) {}
 

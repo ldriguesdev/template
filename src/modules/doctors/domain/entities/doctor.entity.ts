@@ -46,12 +46,19 @@ export class Doctor {
   }
 
   update(
-    data: Partial<Pick<Doctor, 'crm' | 'bio' | 'city' | 'state' | 'phone'>>,
+    data: Partial<
+      Pick<
+        Doctor,
+        'crm' | 'bio' | 'city' | 'state' | 'phone' | 'email' | 'name'
+      >
+    >,
   ) {
     if (data.crm !== undefined) this.crm = data.crm;
     if (data.bio !== undefined) this.bio = data.bio;
     if (data.city !== undefined) this.city = data.city;
     if (data.state !== undefined) this.state = data.state;
     if (data.phone !== undefined) this.phone = data.phone;
+    if (data.name !== undefined) this.name = data.name;
+    if (data.email !== undefined) this.email = data.email;
   }
 }

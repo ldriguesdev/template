@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEmail, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsOptional, IsString } from 'class-validator';
 
 export class UpdateDoctorDTO {
   @ApiProperty({
@@ -18,13 +18,13 @@ export class UpdateDoctorDTO {
   @IsEmail()
   email: string;
 
-  @ApiProperty({
-    example: 'senha123',
-    description: 'Senha de acesso (mínimo 6 caracteres)',
-  })
-  @IsOptional()
-  @MinLength(6)
-  password: string;
+  // @ApiProperty({
+  //   example: 'senha123',
+  //   description: 'Senha de acesso (mínimo 6 caracteres)',
+  // })
+  // @IsOptional()
+  // @MinLength(6)
+  // password: string;
 
   @ApiProperty({
     example: '123456',

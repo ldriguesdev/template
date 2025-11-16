@@ -8,6 +8,7 @@ import { UsersRepository } from '../users/domain/repositories/users.repository';
 import { DoctorController } from './infra/http/controllers/doctor.controller';
 import { GetDoctorUseCase } from './application/use-cases/get-doctor.usecase';
 import { GetDoctorsUseCase } from './application/use-cases/get-doctors.usecase';
+import { UpdateDoctorUseCase } from './application/use-cases/update-doctor.usecase';
 
 @Module({
   providers: [
@@ -15,6 +16,7 @@ import { GetDoctorsUseCase } from './application/use-cases/get-doctors.usecase';
     CreateDoctorUseCase,
     GetDoctorUseCase,
     GetDoctorsUseCase,
+    UpdateDoctorUseCase,
     PrismaUsersRepository,
     PrismaDoctorsRepository,
     {
@@ -27,6 +29,7 @@ import { GetDoctorsUseCase } from './application/use-cases/get-doctors.usecase';
     },
   ],
   exports: [
+    UpdateDoctorUseCase,
     CreateUserUseCase,
     CreateDoctorUseCase,
     PrismaUsersRepository,

@@ -65,7 +65,7 @@ export class PrismaDoctorsRepository implements DoctorsRepository {
     return DoctorMapper.toDomain(raw);
   }
 
-  async update(doctor: Doctor): Promise<Doctor | null> {
+  async update(doctor: Doctor): Promise<Doctor> {
     const raw = await this.prisma.doctor.update({
       where: { id: doctor.id },
       data: {
@@ -75,6 +75,12 @@ export class PrismaDoctorsRepository implements DoctorsRepository {
         state: doctor.state,
         phone: doctor.phone,
         updated_at: new Date(),
+        user: {
+          update: {
+            email: doctor.email,
+            name: doctor.name,
+          },
+        },
       },
       include: {
         user: true,

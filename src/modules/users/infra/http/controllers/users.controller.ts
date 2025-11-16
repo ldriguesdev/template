@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { CreateUserDTO } from 'src/modules/users/application/dto/create-user.dto';
 import { CreateUserUseCase } from 'src/modules/users/application/use-cases/create-user.usecase';
@@ -24,6 +25,7 @@ import { GetUsersUseCase } from 'src/modules/users/application/use-cases/get-use
 import { DeleteUserUseCase } from 'src/modules/users/application/use-cases/delete-user.usecase';
 import { UpdateUserDTO } from 'src/modules/users/application/dto/update-user.dto';
 import { UpdateUserUseCase } from 'src/modules/users/application/use-cases/update-user.usecase';
+import { FilterUsersQueryDto } from 'src/modules/users/application/dto/users-query.dto';
 
 @Controller('users')
 export class UsersController {
@@ -57,8 +59,6 @@ export class UsersController {
   @ApiOkResponse({ description: 'User updated successfully.' })
   @ApiNotFoundResponse({ description: 'User not found.' })
   async update(@Param('id') id: string, @Body() dto: UpdateUserDTO) {
-    console.log('id', id);
-
     const user = await this.updateUser.execute(id, dto);
     return UserPresenter.toHTTP(user);
   }
@@ -90,9 +90,13 @@ export class UsersController {
   @Get()
   @ApiOperation({ summary: 'List all users.' })
   @ApiOkResponse({ description: 'Users listed successfully.' })
-  async findAll() {
-    const users = await this.getAllUsers.execute();
-    return users ? users.map((user) => UserPresenter.toHTTP(user)) : [];
+  async findAll(@Query() query: FilterUsersQueryDto) {
+    const users = await this.getAllUsers.execute({
+      name: query.name,
+      role: query.role,
+    });
+
+    return users.map((user) => UserPresenter.toHTTP(user));
   }
 
   @Delete(':id')

@@ -5,5 +5,5 @@ export abstract class DoctorsRepository {
   abstract findById(id: string): Promise<Doctor | null>;
   abstract findAll(): Promise<Doctor[] | null>;
   abstract delete(id: string): Promise<Doctor | null>;
-  abstract update(doctor: Doctor): Promise<Doctor | null>;
+  abstract update(doctor: Doctor): Promise<Doctor>;
 }

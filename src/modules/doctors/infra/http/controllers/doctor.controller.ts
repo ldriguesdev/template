@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -15,6 +15,8 @@ import { CreateDoctorUseCase } from 'src/modules/doctors/application/use-cases/c
 import { GetDoctorUseCase } from 'src/modules/doctors/application/use-cases/get-doctor.usecase';
 import { GetDoctorsUseCase } from 'src/modules/doctors/application/use-cases/get-doctors.usecase';
 import { CreateDoctorDTO } from 'src/modules/doctors/application/dto/create-doctor.dto';
+import { UpdateDoctorDTO } from 'src/modules/doctors/application/dto/update-doctor.dto';
+import { UpdateDoctorUseCase } from 'src/modules/doctors/application/use-cases/update-doctor.usecase';
 
 @ApiTags('Doctors')
 @Controller('doctors')
@@ -23,6 +25,7 @@ export class DoctorController {
     private readonly createDoctor: CreateDoctorUseCase,
     private readonly getDoctorById: GetDoctorUseCase,
     private readonly getAllDoctors: GetDoctorsUseCase,
+    private readonly updateDoctor: UpdateDoctorUseCase,
   ) {}
 
   @Post()
@@ -40,6 +43,21 @@ export class DoctorController {
   })
   async create(@Body() dto: CreateDoctorDTO) {
     const doctor = await this.createDoctor.execute(dto);
+    return DoctorPresenter.toHTTP(doctor);
+  }
+
+  @Patch(':id')
+  @ApiOperation({ summary: 'Updates an existing doctor.' })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    required: true,
+  })
+  @ApiBody({ type: UpdateDoctorDTO })
+  @ApiOkResponse({ description: 'User updated successfully.' })
+  @ApiNotFoundResponse({ description: 'Doctor not found.' })
+  async update(@Param('id') id: string, @Body() dto: UpdateDoctorDTO) {
+    const doctor = await this.updateDoctor.execute(id, dto);
     return DoctorPresenter.toHTTP(doctor);
   }
 
