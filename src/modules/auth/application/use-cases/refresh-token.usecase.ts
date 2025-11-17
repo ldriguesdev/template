@@ -5,6 +5,8 @@ import { TokenService, JwtPayload } from '../../domain/services/token.service';
 import { ConfigService } from '@nestjs/config';
 import { RefreshTokenRepository } from '../../domain/repository/refresh-token.repository';
 import { UnauthorizedExceptionError } from '../errors/unauthorized-exception.error';
+import { TokenInvalidExceptionError } from '../errors/token-invalid-exception.error';
+import { UserNotExistsError } from 'src/modules/users/application/errors/user-not-exists.error';
 
 @Injectable()
 export class RefreshTokenUseCase {
@@ -30,16 +32,14 @@ export class RefreshTokenUseCase {
       await this.refreshTokenRepository.findByHashedToken(hashedToken);
 
     if (!tokenFromDb) {
-      throw new UnauthorizedException(
-        'Refresh token não encontrado ou revogado.',
-      );
+      throw new TokenInvalidExceptionError();
     }
 
     await this.refreshTokenRepository.delete(tokenFromDb.id);
 
     const user = await this.usersRepository.findById(payload.sub);
     if (!user) {
-      throw new UnauthorizedException('Usuário não encontrado.');
+      throw new UserNotExistsError();
     }
 
     const newPayload = { email: user.email, sub: user.id };

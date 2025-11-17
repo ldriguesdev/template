@@ -3,6 +3,8 @@ import { UsersRepository } from 'src/modules/users/domain/repositories/users.rep
 import { HashingService } from '../../domain/services/hashing.service';
 import { PasswordResetRepository } from '../../domain/repository/password-reset.repository';
 import { UserNotExistsError } from 'src/modules/users/application/errors/user-not-exists.error';
+import { TokenExpiredError } from '@nestjs/jwt';
+import { TokenInvalidExceptionError } from '../errors/token-invalid-exception.error';
 
 @Injectable()
 export class ResetPasswordUseCase {
@@ -18,9 +20,7 @@ export class ResetPasswordUseCase {
       await this.passwordResetRepository.findByHashedToken(hashedToken);
 
     if (!tokenFromDb || tokenFromDb.expires_at < new Date()) {
-      throw new UnauthorizedException(
-        'Token de redefinição inválido ou expirado.',
-      );
+      throw new TokenInvalidExceptionError();
     }
 
     const newPasswordHash = await this.hashingService.hash(newPassword);

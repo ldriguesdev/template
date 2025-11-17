@@ -17,11 +17,7 @@ export class SignInUseCase {
   ) {}
 
   async execute(email: string, password: string) {
-    console.log(email);
-
     const user = await this.usersRepository.findByEmail(email);
-
-    console.log(user);
 
     if (!user) {
       throw new UnauthorizedExceptionError();
