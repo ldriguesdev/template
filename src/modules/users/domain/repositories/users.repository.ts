@@ -10,7 +10,7 @@ export interface UserFilterParams {
 export abstract class UsersRepository {
   abstract create(user: User): Promise<User>;
   abstract findById(id: string): Promise<User | null>;
-  abstract findByEmail(id: string): Promise<User | null>;
+  abstract findByEmail(email: string): Promise<User | null>;
   abstract findAll(params: UserFilterParams): Promise<User[]>;
   abstract delete(id: string): Promise<User | null>;
   abstract update(user: User): Promise<User>;

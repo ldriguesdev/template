@@ -9,6 +9,7 @@ import { DoctorController } from './infra/http/controllers/doctor.controller';
 import { GetDoctorUseCase } from './application/use-cases/get-doctor.usecase';
 import { GetDoctorsUseCase } from './application/use-cases/get-doctors.usecase';
 import { UpdateDoctorUseCase } from './application/use-cases/update-doctor.usecase';
+import { DeleteDoctorUseCase } from './application/use-cases/delete-doctor.usecase';
 
 @Module({
   providers: [
@@ -17,6 +18,7 @@ import { UpdateDoctorUseCase } from './application/use-cases/update-doctor.useca
     GetDoctorUseCase,
     GetDoctorsUseCase,
     UpdateDoctorUseCase,
+    DeleteDoctorUseCase,
     PrismaUsersRepository,
     PrismaDoctorsRepository,
     {
@@ -36,6 +38,7 @@ import { UpdateDoctorUseCase } from './application/use-cases/update-doctor.useca
     PrismaDoctorsRepository,
     GetDoctorUseCase,
     GetDoctorsUseCase,
+    DeleteDoctorUseCase,
   ],
   controllers: [DoctorController],
 })

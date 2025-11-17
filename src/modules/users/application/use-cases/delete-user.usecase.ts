@@ -17,7 +17,7 @@ export class DeleteUserUseCase {
       throw new UserNotExistsError();
     }
 
-    const doctor = await this.doctorsRepository.findById(user.id);
+    const doctor = await this.doctorsRepository.findByUserId(user.id);
 
     if (doctor) {
       await this.doctorsRepository.delete(doctor.id);

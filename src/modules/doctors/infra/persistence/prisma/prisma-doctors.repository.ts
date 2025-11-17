@@ -89,4 +89,17 @@ export class PrismaDoctorsRepository implements DoctorsRepository {
 
     return DoctorMapper.toDomain(raw);
   }
+
+  async findByUserId(userId: string): Promise<Doctor | null> {
+    const raw = await this.prisma.doctor.findUnique({
+      where: {
+        user_id: userId,
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    return raw ? DoctorMapper.toDomain(raw) : null;
+  }
 }

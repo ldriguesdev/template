@@ -7,12 +7,14 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateUserDTO } from 'src/modules/users/application/dto/create-user.dto';
 import { CreateUserUseCase } from 'src/modules/users/application/use-cases/create-user.usecase';
 import { UserPresenter } from '../presenters/user.presenter';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
   ApiNotFoundResponse,
@@ -26,6 +28,7 @@ import { DeleteUserUseCase } from 'src/modules/users/application/use-cases/delet
 import { UpdateUserDTO } from 'src/modules/users/application/dto/update-user.dto';
 import { UpdateUserUseCase } from 'src/modules/users/application/use-cases/update-user.usecase';
 import { FilterUsersQueryDto } from 'src/modules/users/application/dto/users-query.dto';
+import { JwtAuthGuard } from 'src/modules/auth/infra/http/guards/jwt-auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -37,6 +40,8 @@ export class UsersController {
     private readonly updateUser: UpdateUserUseCase,
   ) {}
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Post()
   @ApiOperation({ summary: 'Create a new user.' })
   @ApiBody({ type: CreateUserDTO })
@@ -48,6 +53,8 @@ export class UsersController {
     return UserPresenter.toHTTP(user);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Patch(':id')
   @ApiOperation({ summary: 'Updates an existing user.' })
   @ApiParam({
@@ -63,6 +70,8 @@ export class UsersController {
     return UserPresenter.toHTTP(user);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Get(':id')
   @ApiOperation({
     summary: 'Search for a user by ID.',
@@ -87,6 +96,8 @@ export class UsersController {
     return UserPresenter.toHTTP(user);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Get()
   @ApiOperation({ summary: 'List all users.' })
   @ApiOkResponse({ description: 'Users listed successfully.' })
@@ -99,6 +110,8 @@ export class UsersController {
     return users.map((user) => UserPresenter.toHTTP(user));
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Delete(':id')
   @ApiOperation({
     summary: 'Delete user by ID.',

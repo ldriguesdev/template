@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { PrismaUsersRepository } from './infra/persistence/prisma/prisma-users.repository';
 import { CreateUserUseCase } from './application/use-cases/create-user.usecase';
 import { UsersRepository } from './domain/repositories/users.repository';
@@ -10,6 +10,7 @@ import { UpdateUserUseCase } from './application/use-cases/update-user.usecase';
 import { PrismaDoctorsRepository } from '../doctors/infra/persistence/prisma/prisma-doctors.repository';
 import { DeleteDoctorUseCase } from '../doctors/application/use-cases/delete-doctor.usecase';
 import { DoctorsRepository } from '../doctors/domain/repository/doctors.repository';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   providers: [

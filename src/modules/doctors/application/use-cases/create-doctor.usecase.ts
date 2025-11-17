@@ -21,7 +21,7 @@ export class CreateDoctorUseCase {
       throw new EmailAlreadyExistsError();
     }
 
-    const user = UserDomainService.createUser(
+    const user = await UserDomainService.createUser(
       dto.name,
       dto.email,
       dto.password,

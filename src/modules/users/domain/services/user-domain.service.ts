@@ -1,4 +1,5 @@
 import { User } from '../entities/user.entity';
+import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 
 export class UserDomainService {
@@ -8,18 +9,19 @@ export class UserDomainService {
     }
   }
 
-  static hashPassword(password: string): string {
-    return crypto.createHash('sha256').update(password).digest('hex');
+  static async hashPassword(password: string): Promise<string> {
+    return await bcrypt.hash(password, 10);
   }
 
-  static createUser(
+  static async createUser(
     name: string,
     email: string,
     password: string,
     role: 'USER' | 'ADMIN' | 'DOCTOR' | 'PATIENT' | 'MANAGER' = 'USER',
-  ): User {
+  ): Promise<User> {
     this.validateEmail(email);
-    const passwordHash = this.hashPassword(password);
+
+    const passwordHash = await this.hashPassword(password);
 
     return new User(
       crypto.randomUUID(),

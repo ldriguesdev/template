@@ -1,6 +1,16 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
   ApiNotFoundResponse,
@@ -17,6 +27,8 @@ import { GetDoctorsUseCase } from 'src/modules/doctors/application/use-cases/get
 import { CreateDoctorDTO } from 'src/modules/doctors/application/dto/create-doctor.dto';
 import { UpdateDoctorDTO } from 'src/modules/doctors/application/dto/update-doctor.dto';
 import { UpdateDoctorUseCase } from 'src/modules/doctors/application/use-cases/update-doctor.usecase';
+import { DeleteDoctorUseCase } from 'src/modules/doctors/application/use-cases/delete-doctor.usecase';
+import { JwtAuthGuard } from 'src/modules/auth/infra/http/guards/jwt-auth.guard';
 
 @ApiTags('Doctors')
 @Controller('doctors')
@@ -26,8 +38,11 @@ export class DoctorController {
     private readonly getDoctorById: GetDoctorUseCase,
     private readonly getAllDoctors: GetDoctorsUseCase,
     private readonly updateDoctor: UpdateDoctorUseCase,
+    private readonly deleteDoctor: DeleteDoctorUseCase,
   ) {}
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Post()
   @ApiOperation({
     summary: 'Create a new doctor',
@@ -46,6 +61,8 @@ export class DoctorController {
     return DoctorPresenter.toHTTP(doctor);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Patch(':id')
   @ApiOperation({ summary: 'Updates an existing doctor.' })
   @ApiParam({
@@ -61,6 +78,8 @@ export class DoctorController {
     return DoctorPresenter.toHTTP(doctor);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Get(':id')
   @ApiOperation({
     summary: 'Find doctor by ID',
@@ -87,6 +106,8 @@ export class DoctorController {
     return DoctorPresenter.toHTTP(doctor);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Get()
   @ApiOperation({ summary: 'List all doctors' })
   @ApiOkResponse({
@@ -97,5 +118,23 @@ export class DoctorController {
   async findAll() {
     const doctors = await this.getAllDoctors.execute();
     return doctors.map((data) => DoctorPresenter.toHTTP(data));
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Delete(':id')
+  @ApiOperation({
+    summary: 'Delete doctor by ID.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    required: true,
+  })
+  @ApiOkResponse({ description: 'Doctor deleted successfully.' })
+  @ApiNotFoundResponse({ description: 'Doctor not found.' })
+  async delete(@Param('id') id: string) {
+    const doctor = await this.deleteDoctor.execute(id);
+    return DoctorPresenter.toHTTP(doctor);
   }
 }
